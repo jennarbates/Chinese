@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | v0.1 draft, 2026-10-07. Becomes `v1` after the sign-off in section 10.1 |
+| Status | v0.2 draft, 2026-10-07. Becomes `v1` after the sign-off in section 10.1 |
 | Product name | **parlaplay**, written in lowercase everywhere, at `parlaplay.games`. The games keep their own names: **Chi è?** (Italian) and **谁？** (*Shéi?*, Chinese). Never use "Guess Who" or any Hasbro title in public branding, as in both game specs |
 | Scope of this document | The shared platform: one site, one login, language choice, and data kept apart by language. Each game's rules, content, engine and game screens stay in its own spec: `docs/games/it.md` (today `jennarbates/Italian` `spec.md`) and `docs/games/zh.md` (today `jennarbates/Chinese` `spec.md`) |
 | Audience | Whoever builds, reviews or tests the merged site |
@@ -285,11 +285,11 @@ Guest with Italian and Chinese guest data signs in on `/zh/progress`.
 
 ### 5.1 Repository
 
-**Decision.** A new repository `jennarbates/parlaplay`, started from Chi è?'s `main` at the tag `chie-launch` (made on Thu Oct 29), keeping Chi è?'s history. Shéi is brought in with its history. Both old repos are archived after launch.
+**Decision.** A new repository `jennarbates/parlaplay`, created on Wed Oct 7 from Chi è?'s `main` with its full history, plus this spec and the backlog. It holds only planning until the code moves in on Fri Oct 30, when Chi è?'s launch commit (tag `chie-launch`, made on Thu Oct 29) is merged into it. Shéi is brought in with its history. Both old repos are archived after launch.
 
 **Steps.**
 
-1. Push Chi è?'s history to the new repo: `git clone` Chi è?, `git remote set-url origin` to `jennarbates/parlaplay`, push `main`.
+1. Merge Chi è?'s launch into the new repo: add `jennarbates/Italian` as remote `italian` and `git merge chie-launch`. This is a normal merge, because `parlaplay` `main` is an earlier Chi è? `main` plus planning commits.
 2. Move the Italian game into place with `git mv`: `src/engine`, `src/content`, game screens and `public/art` go to `src/languages/it/`; shared code (`services`, account, sign-in, shell UI) goes to `src/core/`.
 3. Bring in Shéi with history: add `jennarbates/Chinese` as remote `chinese`, then `git merge -s ours --no-commit --allow-unrelated-histories chinese/main` (record Shéi's history as a parent without taking its files), `git checkout chinese/main -- src/engine src/content src/ui/game public/art docs/reviews` into a temporary folder, `git mv` into `src/languages/zh/`, and commit. `git log --follow` then shows Shéi's history for its files.
 4. Reconcile the shared code: where Shéi changed shared files (storage keys, `prefs`, slip rows, SRS card list), the shared version takes the language module's hooks (3.2) instead.
@@ -670,12 +670,12 @@ Capacity follows the Shéi spec: half days until Thu Oct 29 (the Chi è? launch)
 
 | Day | Date | Capacity | Deliverable | Done when |
 |---|---|---|---|---|
-| 1 | Thu Oct 8 | Half | Confirm `parlaplay.games` root is owned and unused; create the SES domain identity `parlaplay.games`; this spec to owner review | Root domain answers only Cloudflare; SES identity pending verification; review date set (Wed Oct 14) |
+| 1 | Thu Oct 8 | Half | (Done Wed Oct 7: `jennarbates/parlaplay` created with this spec and the backlog.) Confirm `parlaplay.games` root is owned and unused; create the SES domain identity `parlaplay.games`; this spec to owner review | Root domain answers only Cloudflare; SES identity pending verification; review date set (Wed Oct 14) |
 | 2 | Fri Oct 9 | Half | Paper trace 10.1; spike: largest handoff fragment in Safari iOS | Trace done, TBDs listed; fragment limit recorded in 5.3 |
 | 3 | Mon Oct 12 to Wed Oct 14 | Half | Revise spec; tag `v1` | Spec `v1` tagged |
 | 4 | Thu Oct 15 to Wed Oct 28 | Half | Shéi game work per its spec (content review, engine), in `jennarbates/Chinese` | Shéi spec milestones 3 and 4 done |
 | 5 | Thu Oct 29 | Half | Chi è? launches on `chie.parlaplay.games`; tag `chie-launch` | Tag exists on Chi è? `main` |
-| 6 | Fri Oct 30 | Full | New repo from Chi è? history; move Italian into `src/languages/it` and shared code into `src/core`; import Shéi with history into `src/languages/zh` | CI green with both games' unit tests in the new layout |
+| 6 | Fri Oct 30 | Full | Merge `chie-launch` into the new repo; move Italian into `src/languages/it` and shared code into `src/core`; import Shéi with history into `src/languages/zh` | CI green with both games' unit tests in the new layout |
 | 7 | Mon Nov 2 | Full | Registry, module contract, shell reducer and routes; lazy loading; per-language storage keys | Shell reducer tests pass; `/it` and `/zh` play locally; bundle check passes |
 | 8 | Tue Nov 3 | Full | Migration 1 local and staging; language-aware sync, settings, sign-in prompt, sign-out; compatibility test | Sync, migration and compatibility tests pass on local; staging migrated |
 | 9 | Wed Nov 4 | Full | Picker, Home link, Progress switch, Settings, not-found screens, email template on staging; previews on staging; separation tests | A preview signs in against staging and plays both languages |
@@ -709,7 +709,7 @@ Capacity follows the Shéi spec: half days until Thu Oct 29 (the Chi è? launch)
 | D1 | One site at `parlaplay.games`, games at `/it` and `/zh` | One origin is what makes one login and one device store possible |
 | D2 | Language codes are BCP 47 primary subtags (`it`, `zh`) and double as URL segments | Standard, short, and the same string in URLs, storage keys and the database |
 | D3 | One repo with `src/core` and `src/languages/{code}`, not two apps sharing a package | Two apps mean two origins: separate sessions and IndexedDB, so no single login without cross-origin tricks |
-| D4 | New repo from Chi è?'s history; Shéi merged in with history | Chi è? is the launched trunk; both histories stay searchable |
+| D4 | New repo from Chi è?'s history, created early for planning; `chie-launch` merged in on Oct 30; Shéi merged in with history | Chi è? is the launched trunk; both histories stay searchable; issues need a repo with the spec on `main` now |
 | D5 | One Supabase project per environment; a `language` column referencing a `languages` table | One set of tables and RLS; a new language is one row; no extra projects or cost |
 | D6 | Reuse Chi è?'s staging and production projects | They exist, production is already Pro, and the Free plan allows only 2 active projects |
 | D7 | `supabase/migrations/` lives only in `jennarbates/parlaplay` | The CLI refuses to push when the database has migrations its folder lacks; one owner avoids that |
@@ -750,4 +750,5 @@ Capacity follows the Shéi spec: half days until Thu Oct 29 (the Chi è? launch)
 ## Changelog
 
 - 2026-10-07: v0 draft.
+- 2026-10-07: v0.2. The repo is created now from Chi è? `main` to hold the spec and backlog; `chie-launch` is merged into it on Oct 30 instead of being its starting point (5.1, D4).
 - 2026-10-07: v0.1. Milestones days 9 to 11 rebalanced to match the backlog (accessibility pass, Sentry and privacy note move to day 11).
