@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | v0 draft, 2026-10-07. Becomes `v1` after the sign-off in section 10.1 |
+| Status | v0.1 draft, 2026-10-07. Becomes `v1` after the sign-off in section 10.1 |
 | Product name | **parlaplay**, written in lowercase everywhere, at `parlaplay.games`. The games keep their own names: **Chi è?** (Italian) and **谁？** (*Shéi?*, Chinese). Never use "Guess Who" or any Hasbro title in public branding, as in both game specs |
 | Scope of this document | The shared platform: one site, one login, language choice, and data kept apart by language. Each game's rules, content, engine and game screens stay in its own spec: `docs/games/it.md` (today `jennarbates/Italian` `spec.md`) and `docs/games/zh.md` (today `jennarbates/Chinese` `spec.md`) |
 | Audience | Whoever builds, reviews or tests the merged site |
@@ -678,9 +678,9 @@ Capacity follows the Shéi spec: half days until Thu Oct 29 (the Chi è? launch)
 | 6 | Fri Oct 30 | Full | New repo from Chi è? history; move Italian into `src/languages/it` and shared code into `src/core`; import Shéi with history into `src/languages/zh` | CI green with both games' unit tests in the new layout |
 | 7 | Mon Nov 2 | Full | Registry, module contract, shell reducer and routes; lazy loading; per-language storage keys | Shell reducer tests pass; `/it` and `/zh` play locally; bundle check passes |
 | 8 | Tue Nov 3 | Full | Migration 1 local and staging; language-aware sync, settings, sign-in prompt, sign-out; compatibility test | Sync, migration and compatibility tests pass on local; staging migrated |
-| 9 | Wed Nov 4 | Full | Picker, Home link, Progress switch, Settings, privacy note, email template on staging; previews on staging | A preview signs in against staging and plays both languages |
-| 10 | Thu Nov 5 | Full | Handoff page and `/import`; redirects prepared; Sentry project; accessibility and real-device pass; playtest build | Handoff e2e passes; manual checklist done |
-| 11 | Fri Nov 6 | Full | Playtests (Shéi spec milestone 11, plus one Chi è? player) on staging | Findings logged and triaged |
+| 9 | Wed Nov 4 | Full | Picker, Home link, Progress switch, Settings, not-found screens, email template on staging; previews on staging; separation tests | A preview signs in against staging and plays both languages |
+| 10 | Thu Nov 5 | Full | Handoff page and `/import`; platform e2e suite; playtest build on staging | Handoff e2e passes; playtest build deployed |
+| 11 | Fri Nov 6 | Full | Playtests (Shéi spec milestone 11, plus one Chi è? player) on staging; around them: accessibility and real-device pass, Sentry project, privacy note | Findings logged and triaged; manual checklist done |
 | 12 to 14 | Mon Nov 9 to Wed Nov 11 | Full | Fix findings | Every must-fix finding fixed |
 | 15 | Thu Nov 12 | Full | Rehearse migration 1 on staging loaded with a copy of production data; README; DoD sweep | Rehearsal row counts match; every DoD item except launch-day ones checked |
 | 16 | Fri Nov 13 | Full | Launch hour: migration 1 on production, deploy `main`, deploy `chie-handoff`, add redirect rules, SES sender live | `parlaplay.games` live; handoff and redirects verified on a phone |
@@ -750,3 +750,4 @@ Capacity follows the Shéi spec: half days until Thu Oct 29 (the Chi è? launch)
 ## Changelog
 
 - 2026-10-07: v0 draft.
+- 2026-10-07: v0.1. Milestones days 9 to 11 rebalanced to match the backlog (accessibility pass, Sentry and privacy note move to day 11).
